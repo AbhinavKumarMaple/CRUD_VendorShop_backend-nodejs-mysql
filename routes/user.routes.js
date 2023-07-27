@@ -21,8 +21,8 @@ routes.post("/admin/login", userController.adminlogin);
 
 routes.get(
   "/shopuser/:id",
-  adminAuthenticate.verifyToken,
-  userController.getUserInfo
+  userAuthenticate.verifyToken,
+  userController.getVendorShopEmployee
 );
 routes.get(
   "/shopusers",
@@ -33,6 +33,7 @@ routes.get(
 routes.get("/shops", userController.getAllVendorShops);
 routes.post("/login", userController.loginVendorShopEmployee);
 routes.post("/register", userController.registerVendorShopEmployee);
+// routes.get("/ven", userController.getAllVendorShops);
 routes.post(
   "/registerCustomer",
   userAuthenticate.verifyToken,

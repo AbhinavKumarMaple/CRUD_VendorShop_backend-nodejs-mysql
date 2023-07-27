@@ -513,6 +513,105 @@ const registerVendorShopEmployee = (req, res) => {
   });
 };
 
+const getVendorShopEmployee = (req, res) => {
+  const { id: vendorShopRoleId } = req.params;
+
+  // Step 1: Find the user_id, vendor_shop_id, and roles_type_id for the given vendorShopRoleId
+  const vendorShopRoleQuery =
+    "SELECT user_id, vendor_shop_id, roles_type_id FROM vendor_shops_roles WHERE id = ?";
+  const vendorShopRoleValues = [vendorShopRoleId];
+  console.log(vendorShopRoleQuery);
+  connection.query(
+    vendorShopRoleQuery,
+    vendorShopRoleValues,
+    (err, vendorShopRoleResult) => {
+      if (err) {
+        console.error("Error finding vendor shop role:", err);
+        res.status(500).json({
+          error: "Error finding vendor shop role",
+        });
+      } else if (vendorShopRoleResult.length === 0) {
+        res.status(404).json({
+          message: "Vendor shop role not found.",
+        });
+      } else {
+        const { user_id, vendor_shop_id, roles_type_id } =
+          vendorShopRoleResult[0];
+
+        // Step 2: Get user information from the users table
+        const userQuery = "SELECT * FROM users WHERE id = ?";
+        const userValues = [user_id];
+
+        connection.query(userQuery, userValues, (err, userResult) => {
+          if (err) {
+            console.error("Error fetching user details:", err);
+            res.status(500).json({
+              error: "Error fetching user details",
+            });
+          } else if (userResult.length === 0) {
+            res.status(404).json({
+              message: "User not found.",
+            });
+          } else {
+            const user = userResult[0];
+
+            // Step 3: Get the role name from the roles table
+            const roleQuery = "SELECT role_name FROM roles WHERE id = ?";
+            const roleValues = [roles_type_id];
+
+            connection.query(roleQuery, roleValues, (err, roleResult) => {
+              if (err) {
+                console.error("Error fetching role details:", err);
+                res.status(500).json({
+                  error: "Error fetching role details",
+                });
+              } else if (roleResult.length === 0) {
+                res.status(404).json({
+                  message: "Role not found.",
+                });
+              } else {
+                const role = roleResult[0].role_name;
+
+                // Step 4: Get the vendor shop details
+                const vendorShopQuery =
+                  "SELECT * FROM vendor_shops WHERE id = ?";
+                const vendorShopValues = [vendor_shop_id];
+
+                connection.query(
+                  vendorShopQuery,
+                  vendorShopValues,
+                  (err, vendorShopResult) => {
+                    if (err) {
+                      console.error("Error fetching vendor shop details:", err);
+                      res.status(500).json({
+                        error: "Error fetching vendor shop details",
+                      });
+                    } else if (vendorShopResult.length === 0) {
+                      res.status(404).json({
+                        message: "Vendor shop not found.",
+                      });
+                    } else {
+                      const vendorShop = vendorShopResult[0];
+
+                      // Combine all information and send it in the response
+                      res.status(200).json({
+                        vendorShopRoleId,
+                        user,
+                        role,
+                        vendorShop,
+                      });
+                    }
+                  }
+                );
+              }
+            });
+          }
+        });
+      }
+    }
+  );
+};
+
 const loginVendorShopEmployee = (req, res) => {
   const { email, password } = req.body;
 
@@ -1089,6 +1188,7 @@ module.exports = {
   adminlogin,
   registerVendorShopEmployee,
   loginVendorShopEmployee,
+  getVendorShopEmployee,
   updateVendorShopEmployee,
   getUserInfo,
   getAllUsersWithVendorShopRole,
