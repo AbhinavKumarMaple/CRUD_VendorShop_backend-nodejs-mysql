@@ -162,7 +162,7 @@ routes.post(
   adminAuthenticate.verifyToken,
   productController.createProduct
 );
-routes.get("/", adminAuthenticate.verifyToken, productController.getProducts);
+routes.get("/", userAuthenticate.verifyToken, productController.getProducts);
 routes.get("/:id", userAuthenticate.verifyToken, productController.getProduct);
 routes.put(
   "/:id",
