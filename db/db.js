@@ -7,12 +7,12 @@ const connection = mysql.createConnection({
   database: process.env.MYSQL_DATABASE,
 });
 
-connection.connect((err) => {
-  if (err) {
-    console.error("Error connecting to MySQL:", err);
-    return;
-  }
-  console.log("Connected to MySQL!");
-});
+// connection.connect((err) => {
+//   if (err) {
+//     console.error("Error connecting to MySQL:", err);
+//     return;
+//   }
+//   console.log("Connected to MySQL!");
+// });
 
 module.exports = connection;
