@@ -36,36 +36,42 @@ if (cluster.isMaster) {
     createWorker();
   });
 } else {
-  // const connection = mysql.createConnection({
-  //   host: process.env.MYSQL_HOST,
-  //   user: process.env.MYSQL_USER,
-  //   password: process.env.MYSQL_PASSWORD,
-  //   database: process.env.MYSQL_DATABASE,
-  // });
-  // connection.connect((err) => {
-  //   if (err) {
-  //     console.error("DB Connection Error message: " + err.message);
-  //     return;
-  //   }
-  console.log("Connected to MySQL database");
-  app.listen(5000, () => {
-    console.log(`Worker ${cluster.worker.id} connected to Server on Port 5000`);
+  const connection = mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
   });
-  // });
+
+  connection.connect((err) => {
+    if (err) {
+      console.error("DB Connection Error message: " + err.message);
+      return;
+    }
+
+    console.log("Connected to MySQL database");
+    app.listen(5000, () => {
+      console.log(
+        `Worker ${cluster.worker.id} connected to Server on Port 5000`
+      );
+    });
+  });
+
   // Close the connection when the server is stopped
-  // process.on("SIGINT", () => {
-  //   connection.end();
-  //   process.exit();
-  // });
+  process.on("SIGINT", () => {
+    connection.end();
+    process.exit();
+  });
+
   // Check if the server is connected to MySQL
-  // connection.query("SELECT 1 + 1 AS solution", (error, results) => {
-  //   if (error) {
-  //     console.error("Error connecting to MySQL:", error);
-  //   } else {
-  //     console.log(
-  //       `Worker ${cluster.worker.id}: MySQL connection is successful. Result:`,
-  //       results[0].solution
-  //     );
-  //   }
-  // });
+  connection.query("SELECT 1 + 1 AS solution", (error, results) => {
+    if (error) {
+      console.error("Error connecting to MySQL:", error);
+    } else {
+      console.log(
+        `Worker ${cluster.worker.id}: MySQL connection is successful. Result:`,
+        results[0].solution
+      );
+    }
+  });
 }
