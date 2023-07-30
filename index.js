@@ -47,12 +47,10 @@ if (cluster.isMaster) {
   //     console.error("DB Connection Error message: " + err.message);
   //     return;
   //   }
-  //   console.log("Connected to MySQL database");
-  //   app.listen(5000, () => {
-  //     console.log(
-  //       `Worker ${cluster.worker.id} connected to Server on Port 5000`
-  //     );
-  //   });
+  console.log("Connected to MySQL database");
+  app.listen(5000, () => {
+    console.log(`Worker ${cluster.worker.id} connected to Server on Port 5000`);
+  });
   // });
   // Close the connection when the server is stopped
   // process.on("SIGINT", () => {
