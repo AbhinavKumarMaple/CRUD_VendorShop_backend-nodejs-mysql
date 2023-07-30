@@ -52,5 +52,5 @@ routes.put(
   userAuthenticate.verifyToken,
   userController.updateVendorShopEmployee
 );
-
+routes.get("/demo/api/", userController.demoFunc);
 module.exports = routes;

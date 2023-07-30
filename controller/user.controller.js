@@ -1181,6 +1181,12 @@ const getCustomerShopsByVendorShopRoleId = (req, res) => {
   });
 };
 
+const demoFunc = (req, res) => {
+  res.status(200).json({
+    dome: "Got it",
+  });
+};
+
 module.exports = {
   registerAdminUser,
   updateAdminUser,
@@ -1195,4 +1201,5 @@ module.exports = {
   getAllVendorShops,
   registerCustomer,
   getCustomerShopsByVendorShopRoleId,
+  demoFunc,
 };
